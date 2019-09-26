@@ -57,8 +57,9 @@ def deform(src_img, label, type):
 
     return dst_img, label
 
-def main(img_path):
-    operation = [0, 1, 0]
+def main(img_path, data_path, operation : list):
+    assert os.path.exists(img_path) and os.path.exists(data_path), 'image path or data path not exists'
+
     print(f'img: {os.path.abspath(img_path)}')
     filename = os.path.basename(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_COLOR)
@@ -71,13 +72,20 @@ def main(img_path):
         start = time.time()
         img, label = deform(img, label, type_)
         print(f'round {i} finished, time:{time.time() - start}s')
+
+    label_path = os.path.join(data_path, 'labels')
+    img_path = os.path.join(data_path, 'img')
+    for path in [label_path, img_path]:
+        if not os.path.exists(path):
+            print(f'path {path} not exists, mkdir')
+            os.mkdir(path)
     
-    np.savetxt(os.path.join('data_gen/labels', filename[:filename.index('.')] + '_x.csv'), label[:,:,0], fmt='%f')
-    np.savetxt(os.path.join('data_gen/labels', filename[:filename.index('.')] + '_y.csv'), label[:,:,1], fmt='%f')
-    cv2.imwrite(os.path.join('data_gen/img', filename), img)
+    np.savetxt(os.path.join(label_path, filename[:filename.index('.')] + '_x.csv'), label[:,:,0], fmt='%f')
+    np.savetxt(os.path.join(label_path, filename[:filename.index('.')] + '_y.csv'), label[:,:,1], fmt='%f')
+    cv2.imwrite(os.path.join(img_path, filename), img)
     print(f'img: {os.path.abspath(img_path)} finished, time:{time.time() - total_start}s')
 
 
 
 if __name__ == '__main__':
-    main('data_gen/scan/13.png')
+    main('data_gen/scan/3.png', 'data_gen', [1])
