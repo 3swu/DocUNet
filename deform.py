@@ -35,7 +35,7 @@ def deform(src_img, label, type):
 
     for x in range(rows):
         for y in range(cols):
-            alpha = (avg / 5) if type == 0 else 2
+            alpha = (avg / 3) if type == 0 else 2
             w = (alpha / (distance_array_2d[x][y] + alpha)) if type == 0 else (1 - (distance_array_2d[x][y] / (rows / 2))**alpha)
             offset_x, offset_y = v[1] * math.cos(v[0]) * w, v[1] * math.sin(v[0]) * w
             src_x, src_y = x - offset_x, y - offset_y
@@ -88,4 +88,4 @@ def main(img_path, data_path, operation : list):
 
 
 if __name__ == '__main__':
-    main('data_gen/scan/3.png', 'data_gen', [1])
+    main('data_gen/scan/6.png', 'data_gen', [0, 1, 0, 0, 1, 0])
