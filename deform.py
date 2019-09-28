@@ -5,6 +5,8 @@ import math
 import time
 import os
 
+from anti_deform import from_label_deform
+
 def get_random_vs(rows, cols, _):
     vertex = (random.randint(int(rows / 4), int((rows / 4) * 3)), random.randint(int(cols / 4), int((cols / 4) * 3)))
     avg = (rows + cols) / 2
@@ -18,16 +20,16 @@ def distance(k, vertex, point):
     return abs(a * point[0] + b * point[1] + c) / math.sqrt(a**2 + b**2)
 
 
-def deform(src_img, label, type):
+def deform(src_shape, label, type):
     '''
     type:
         0 - fold
         1 - curve
     '''
 
-    dst_img = np.ones(src_img.shape) * 255
-    rows, cols, _ = src_img.shape
-    vertex, v, k, avg = get_random_vs(*src_img.shape)
+    # dst_img = np.ones(src_shape) * 255
+    rows, cols, _ = src_shape
+    vertex, v, k, avg = get_random_vs(*src_shape)
     distance_array_2d = np.array([distance(k, vertex, (x, y)) for x in range(rows) for y in range(cols)]).reshape((rows, cols))
 
     #debug
@@ -38,31 +40,20 @@ def deform(src_img, label, type):
             alpha = (avg / 3) if type == 0 else 2
             w = (alpha / (distance_array_2d[x][y] + alpha)) if type == 0 else (1 - (distance_array_2d[x][y] / (rows / 2))**alpha)
             offset_x, offset_y = v[1] * math.cos(v[0]) * w, v[1] * math.sin(v[0]) * w
-            src_x, src_y = x - offset_x, y - offset_y
+            # src_x, src_y = x - offset_x, y - offset_y
 
-            if (src_x < 0 or src_x >= rows - 1) or (src_y < 0 or src_y >= cols - 1):
-                continue
-            else:
-                # label[x][y][0], label[x][y][1] = offset_x, offset_y
-                label[x][y][0] += offset_x
-                label[x][y][1] += offset_y
+            label[x][y][0] += offset_x
+            label[x][y][1] += offset_y
 
-                # bilinear interpolation
-                for i in range(_):
-                    ceil_x, ceil_y, floor_x, floor_y = math.ceil(src_x), math.ceil(src_y), math.floor(src_x), math.floor(src_y)
-                    dst_img[x][y][i] = int(src_img[floor_x][floor_y][i] * (ceil_x - src_x) * (ceil_y - src_y)\
-                          + src_img[floor_x][ceil_y][i] * (ceil_x - src_x) * (src_y - floor_y)\
-                          + src_img[ceil_x][floor_y][i] * (src_x - floor_x) * (ceil_y - src_y)\
-                          + src_img[ceil_x][ceil_y][i] * (src_x - floor_x) * (src_y - floor_y))
+    return label
 
-    return dst_img, label
-
-def main(img_path, data_path, operation : list):
+def gen_deform_label(img_path, data_path, operation : list):
     assert os.path.exists(img_path) and os.path.exists(data_path), 'image path or data path not exists'
 
     print(f'img: {os.path.abspath(img_path)}')
     filename = os.path.basename(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+    img_shape = img.shape
     label =  np.zeros((img.shape[0], img.shape[1], 2))
     total_start = time.time()
 
@@ -70,21 +61,31 @@ def main(img_path, data_path, operation : list):
         start = time.time()
         print(f'round {i}, type:{"fold" if type_ == 0 else "curve"}')
         start = time.time()
-        img, label = deform(img, label, type_)
+        label = deform(img_shape, label, type_)
         print(f'round {i} finished, time:{time.time() - start}s')
 
     label_path = os.path.join(data_path, 'labels')
-    img_path = os.path.join(data_path, 'img')
-    for path in [label_path, img_path]:
-        if not os.path.exists(path):
-            print(f'path {path} not exists, mkdir')
-            os.mkdir(path)
+
+    if not os.path.exists(label_path):
+        print(f'path {label_path} not exists, mkdir')
+        os.mkdir(label_path)
     
     np.save(os.path.join(label_path, filename[: filename.index('.')]), label)
-    cv2.imwrite(os.path.join(img_path, filename), img)
+    # cv2.imwrite(os.path.join(img_path, filename), img)
     print(f'img: {os.path.join(os.path.abspath(img_path), filename)} finished, time:{time.time() - total_start}s')
+    return label
 
 
 
 if __name__ == '__main__':
-    main('data_gen/scan/dtd_0062.jpg', 'data_gen', [1])
+    img_path = 'data_gen/scan/dtd_1.jpg'
+    operation = [1, 1, 0, 1]
+    data_path = 'data_gen'
+    filename = os.path.basename(img_path)
+
+    label = gen_deform_label(img_path, data_path, operation)
+    print(f'start deformation...')
+    start = time.time()
+    img = from_label_deform(label, img_path)
+    cv2.imwrite(os.path.join(data_path, 'img', filename), img)
+    print(f'deformation finished. time: {time.time() - start}')
