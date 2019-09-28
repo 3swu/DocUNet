@@ -80,12 +80,11 @@ def main(img_path, data_path, operation : list):
             print(f'path {path} not exists, mkdir')
             os.mkdir(path)
     
-    np.savetxt(os.path.join(label_path, filename[:filename.index('.')] + '_x.csv'), label[:,:,0], fmt='%f')
-    np.savetxt(os.path.join(label_path, filename[:filename.index('.')] + '_y.csv'), label[:,:,1], fmt='%f')
+    np.save(os.path.join(label_path, filename[: filename.index('.')]), label)
     cv2.imwrite(os.path.join(img_path, filename), img)
-    print(f'img: {os.path.abspath(img_path)} finished, time:{time.time() - total_start}s')
+    print(f'img: {os.path.join(os.path.abspath(img_path), filename)} finished, time:{time.time() - total_start}s')
 
 
 
 if __name__ == '__main__':
-    main('data_gen/scan/6.png', 'data_gen', [0, 1, 0, 0, 1, 0])
+    main('data_gen/scan/dtd_0062.jpg', 'data_gen', [1])
