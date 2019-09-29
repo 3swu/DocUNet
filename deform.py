@@ -1,4 +1,5 @@
 from cv2 import cv2
+from ctypes import *
 import numpy as np
 import random
 import math
@@ -28,9 +29,20 @@ def deform(src_shape, label, type):
     '''
 
     # dst_img = np.ones(src_shape) * 255
+
+    # call C 
+    c_utils = CDLL('code/c_src/util.so')
+    c_distance = c_utils.distance
+    c_distance.restype = c_float
+
+    # use c lib for caluating w wil take more times
+    # c_w = c_utils.w
+    # c_w.restype = c_float
+
     rows, cols, _ = src_shape
     vertex, v, k, avg = get_random_vs(*src_shape)
-    distance_array_2d = np.array([distance(k, vertex, (x, y)) for x in range(rows) for y in range(cols)]).reshape((rows, cols))
+    # distance_array_2d = np.array([distance(k, vertex, (x, y)) for x in range(rows) for y in range(cols)]).reshape((rows, cols))
+    distance_array_2d = np.array([c_distance(c_float(k), vertex[0], vertex[1], x, y) for x in range(rows) for y in range(cols)]).reshape((rows, cols))
 
     #debug
     # np.savetxt('data_gen/color_test_distance.csv', distance_array_2d, fmt='%f')
@@ -39,6 +51,7 @@ def deform(src_shape, label, type):
         for y in range(cols):
             alpha = (avg / 3) if type == 0 else 2
             w = (alpha / (distance_array_2d[x][y] + alpha)) if type == 0 else (1 - (distance_array_2d[x][y] / (rows / 2))**alpha)
+            # w = c_w(c_float(alpha), c_float(distance_array_2d[x][y]), rows, type)
             offset_x, offset_y = v[1] * math.cos(v[0]) * w, v[1] * math.sin(v[0]) * w
             # src_x, src_y = x - offset_x, y - offset_y
 
@@ -72,14 +85,14 @@ def gen_deform_label(img_path, data_path, operation : list):
     
     np.save(os.path.join(label_path, filename[: filename.index('.')]), label)
     # cv2.imwrite(os.path.join(img_path, filename), img)
-    print(f'img: {os.path.join(os.path.abspath(img_path), filename)} finished, time:{time.time() - total_start}s')
+    print(f'img: {os.path.abspath(img_path)} finished, time:{time.time() - total_start}s')
     return label
 
 
 
 if __name__ == '__main__':
-    img_path = 'data_gen/scan/dtd_1.jpg'
-    operation = [1, 1, 0, 1]
+    img_path = 'data_gen/scan/57.png'
+    operation = [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0]
     data_path = 'data_gen'
     filename = os.path.basename(img_path)
 
