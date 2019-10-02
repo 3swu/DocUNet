@@ -4,7 +4,7 @@ import time
 import os
 import math
 
-def from_label_deform(label, img_path):
+def from_label_deform(label_x, label_y, img_path):
     assert os.path.exists(img_path)
 
     # label_x = np.loadtxt(label_csv_path[0])
@@ -14,14 +14,14 @@ def from_label_deform(label, img_path):
     img = cv2.imread(img_path, cv2.IMREAD_COLOR)
 
     rows, cols, _ = img.shape
-    assert (rows, cols, 2) == label.shape, 'shape of labels and img is not same'
+    assert (rows, cols) == label_x.shape and (rows, cols) == label_y.shape, 'shape of labels and img is not same'
 
     dst_img = np.ones(img.shape) * 255
 
     for x in range(rows):
         for y in range(cols):
-            src_x = x - label[x][y][0]
-            src_y = y - label[x][y][1]
+            src_x = x - label_x[x][y]
+            src_y = y - label_y[x][y]
 
             if(src_x < 0 or src_x >= rows - 1) or (src_y < 0 or src_y >= cols - 1):
                 continue
@@ -43,6 +43,6 @@ def from_label_deform(label, img_path):
 
 if __name__ == '__main__':
     start = time.time()
-    img = from_label_deform('data_gen/labels/dtd_0062.npy', 'data_gen/scan/dtd_0062.jpg')
+    img = from_label_deform('data_gen/labels/dtd_0062.npy', 'test(npy)', 'data_gen/scan/dtd_0062.jpg')
     cv2.imwrite('data_gen/img/dtd_0062_anti.jpg', img)
     print(f'time:{time.time() - start}')
