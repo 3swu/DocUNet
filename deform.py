@@ -35,10 +35,10 @@ def deform(src_shape, label_x, label_y, type):
     c_deform = c_utils.deform
     c_deform.restype = None
     c_deform.argtypes = [
-        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2),
-        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2),
-        np.ctypeslib.ndpointer(dtype=np.int, ndim=1),
-        np.ctypeslib.ndpointer(dtype=np.int, ndim=1),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.int32, ndim=1),
+        np.ctypeslib.ndpointer(dtype=np.int32, ndim=1),
         np.ctypeslib.ndpointer(dtype=np.float32, ndim=1),
         c_int,
     ]
@@ -51,8 +51,8 @@ def deform(src_shape, label_x, label_y, type):
     # prepare data
     label_x = label_x.astype(np.float32)
     label_y = label_y.astype(np.float32)
-    shape = np.array([rows, cols])
-    vertex = np.array(vertex)
+    shape = np.array([rows, cols]).astype(np.int32)
+    vertex = np.array(vertex).astype(np.int32)
     v = np.array(v).astype(np.float32)
 
 
@@ -113,7 +113,7 @@ def gen_deform_label(img_path, data_path, operation : list):
 
 
 if __name__ == '__main__':
-    img_path = '/home/wulei/DocUNet/data_gen/scan/dtd_1.jpg'
+    img_path = '/home/wulei/DocUNet/data_gen/scan/57.png'
     operation = [1]
     data_path = '/home/wulei/DocUNet/data_gen'
     filename = os.path.basename(img_path)
