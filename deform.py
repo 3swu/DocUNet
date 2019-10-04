@@ -61,25 +61,6 @@ def deform(src_shape, label_x, label_y, type):
 
     return label_x, label_y
 
-    
-    # # distance_array_2d = np.array([distance(k, vertex, (x, y)) for x in range(rows) for y in range(cols)]).reshape((rows, cols))
-    # distance_array_2d = np.array([c_distance(c_float(k), vertex[0], vertex[1], x, y) for x in range(rows) for y in range(cols)]).reshape((rows, cols))
-
-    # #debug
-    # # np.savetxt('data_gen/color_test_distance.csv', distance_array_2d, fmt='%f')
-
-    # for x in range(rows):
-    #     for y in range(cols):
-    #         alpha = (avg / 3) if type == 0 else 2
-    #         w = (alpha / (distance_array_2d[x][y] + alpha)) if type == 0 else (1 - (distance_array_2d[x][y] / (rows / 2))**alpha)
-    #         # w = c_w(c_float(alpha), c_float(distance_array_2d[x][y]), rows, type)
-    #         offset_x, offset_y = v[1] * math.cos(v[0]) * w, v[1] * math.sin(v[0]) * w
-    #         # src_x, src_y = x - offset_x, y - offset_y
-
-    #         label[x][y][0] += offset_x
-    #         label[x][y][1] += offset_y
-
-    # return label
 
 def gen_deform_label(img_path, data_path, operation : list):
     assert os.path.exists(img_path) and os.path.exists(data_path), 'image path or data path not exists'
@@ -113,8 +94,8 @@ def gen_deform_label(img_path, data_path, operation : list):
 
 
 if __name__ == '__main__':
-    img_path = '/home/wulei/DocUNet/data_gen/scan/57.png'
-    operation = [1]
+    img_path = '/home/wulei/DocUNet/data_gen/scan/30.png'
+    operation = [0, 0, 0, 0, 1]
     data_path = '/home/wulei/DocUNet/data_gen'
     filename = os.path.basename(img_path)
 
