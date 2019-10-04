@@ -16,30 +16,47 @@ def from_label_deform(label_x, label_y, img_path):
     rows, cols, _ = img.shape
     assert (rows, cols) == label_x.shape and (rows, cols) == label_y.shape, 'shape of labels and img is not same'
 
-    dst_img = np.ones(img.shape) * 255
+    dst_img_b = np.ones((rows, cols)) * 255
+    dst_img_g = np.ones((rows, cols)) * 255
+    dst_img_r = np.ones((rows, cols)) * 255
 
-    for x in range(rows):
-        for y in range(cols):
-            src_x = x - label_x[x][y]
-            src_y = y - label_y[x][y]
+    src_img_b = np.zeros((rows, cols))
+    src_img_g = np.zeros((rows, cols))
+    src_img_r = np.zeros((rows, cols))
 
-            if(src_x < 0 or src_x >= rows - 1) or (src_y < 0 or src_y >= cols - 1):
-                continue
-            else:
+    src_img_b[:] = img[:,:,0]
+    src_img_g[:] = img[:,:,1]
+    src_img_r[:] = img[:,:,2]
 
-                # debug
-                # print(f'x: {x}  y : {y} label_x: {label_x[x][y]} label_y: {label_y[x][y]}')
-                # print(f'dst_x : {dst_x}  dst_y: {dst_y}')
-                # print('---')
+    lib = np.ctypeslib.load_library('from_label_deform', 'c_src')
+    c_from_label_deform = lib.from_label_deform
+    c_from_label_deform.restype = None
+    c_from_label_deform.argtypes = [
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.float32, ndim=2, flags='C_CONTIGUOUS'),
+        np.ctypeslib.ndpointer(dtype=np.int32, ndim=1),
+    ]
 
-                for i in range(_):
-                    ceil_x, ceil_y, floor_x, floor_y = math.ceil(src_x), math.ceil(src_y), math.floor(src_x), math.floor(src_y)
-                    dst_img[x][y][i] = int(img[floor_x][floor_y][i] * (ceil_x - src_x) * (ceil_y - src_y)\
-                          + img[floor_x][ceil_y][i] * (ceil_x - src_x) * (src_y - floor_y)\
-                          + img[ceil_x][floor_y][i] * (src_x - floor_x) * (ceil_y - src_y)\
-                          + img[ceil_x][ceil_y][i] * (src_x - floor_x) * (src_y - floor_y))
-    
-    return dst_img
+    shape = np.array([rows, cols]).astype(np.int32)
+    # img = img.astype(np.float32)
+    dst_img_b = dst_img_b.astype(np.float32)
+    dst_img_g = dst_img_g.astype(np.float32)
+    dst_img_r = dst_img_r.astype(np.float32)
+    src_img_b = src_img_b.astype(np.float32)
+    src_img_g = src_img_g.astype(np.float32)
+    src_img_r = src_img_r.astype(np.float32)
+
+    c_from_label_deform(label_x, label_y, src_img_b, src_img_g, src_img_r, dst_img_b, dst_img_g, dst_img_r, shape)
+
+    return np.dstack([dst_img_b, dst_img_g, dst_img_r])
+
+
 
 if __name__ == '__main__':
     start = time.time()
