@@ -28,12 +28,6 @@ void deform(float* label_x, float* label_y, int* shape, int* vertex, float* v, i
     //parameter alpha can be modified
     float alpha = type == 0 ? (avg / 3) : 2.0;
 
-    // debug
-    printf("shape: (%d, %d)\n", rows, cols);
-    printf("vertex: (%d, %d)\n", vertex[0], vertex[1]);
-    printf("v: (%f, %f)\n", v[0], v[1]);
-
-
     // get distance array(same shape of the label and the image)
     float distance_array_2d[rows][cols];
     int i, j;
@@ -56,22 +50,3 @@ void deform(float* label_x, float* label_y, int* shape, int* vertex, float* v, i
 
 }
 
-// int main() {
-//     float label_x[5000][5000];
-//     float label_y[5000][5000];
-//     int i, j;
-
-//     for (i = 0; i < 5000; i++) {
-//         for (j = 0; j < 5000; j++) {
-//             label_x[i][j] = (i + j) * 1.0;
-//             label_y[i][j] = (i - j) * 1.0;
-//         }
-//     }
-
-//     int shape[] = {5000, 5000};
-//     int vertex[] = {2500, 2500};
-//     float v[] = {1.234, 300.123};
-
-//     deform(label_x, label_y, shape, vertex, v, 0);
-
-// }
