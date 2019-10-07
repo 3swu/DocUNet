@@ -75,7 +75,11 @@ def from_label_deform(label_x, label_y, img_path):
     dst_img_g = dst_img_g[min_row : max_row, min_col : max_col]
     dst_img_r = dst_img_r[min_row : max_row, min_col : max_col]
 
-    return np.dstack([dst_img_b, dst_img_g, dst_img_r])
+    label_x = label_x[min_row : max_row, min_col : max_col]
+    label_y = label_y[min_row : max_row, min_col : max_col]
+
+    # return np.dstack([dst_img_b, dst_img_g, dst_img_r])
+    return dst_img_b, dst_img_g, dst_img_r, label_x, label_y
 
 
 
