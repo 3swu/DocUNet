@@ -9,10 +9,6 @@ def texture(label, src_img_b, src_img_g, src_img_r, texture_img_path):
     shape = src_img_b.shape
 
     texture_img_resize = cv2.resize(texture_img, (shape[1], shape[0]))
-
-    # debug
-    print('img shape: ', shape)
-    print('texture shape: ', texture_img_resize.shape)
     
     texture_b, texture_g, texture_r = np.zeros(shape), np.zeros(shape), np.zeros(shape)
     src_b, src_g, src_r = np.zeros(shape), np.zeros(shape), np.zeros(shape)
