@@ -148,5 +148,6 @@ if __name__ == '__main__':
     img = texture(label_x, img_b, img_g, img_r, texture_path)
     cv2.imwrite(os.path.join(data_path, 'img', filename), img)
 
-    # TODO save label_x and label_y
+    label_path = os.path.join(data_path, 'labels')
+    np.savez_compressed(os.path.join(label_path, filename[: filename.index('.')]), x = label_x, y = label_y)
     print(f'deformation finished. time: {time.time() - start}')
