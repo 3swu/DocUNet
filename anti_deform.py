@@ -21,6 +21,8 @@ def from_label_deform(label_x, label_y, img_path):
     src_shape = np.array([rows, cols]).astype(np.int32)
     dst_shape = np.array(label_x.shape).astype(np.int32)
 
+    image_edge = np.zeros(4, ).astype(np.int32)
+
 
     
     dst_img_b = np.zeros(label_x.shape)
@@ -49,6 +51,7 @@ def from_label_deform(label_x, label_y, img_path):
         np.ctypeslib.ndpointer(dtype=np.float64, ndim=2, flags='C_CONTIGUOUS'),
         np.ctypeslib.ndpointer(dtype=np.float64, ndim=2, flags='C_CONTIGUOUS'),
         np.ctypeslib.ndpointer(dtype=np.int32, ndim=1),
+        np.ctypeslib.ndpointer(dtype=np.int32, ndim=1),
     ]
 
     
@@ -60,7 +63,17 @@ def from_label_deform(label_x, label_y, img_path):
     src_img_g = src_img_g.astype(np.float64)
     src_img_r = src_img_r.astype(np.float64)
 
-    c_from_label_deform(label_x, label_y, dst_shape, src_img_b, src_img_g, src_img_r, dst_img_b, dst_img_g, dst_img_r, src_shape)
+    c_from_label_deform(label_x, label_y, dst_shape, src_img_b, src_img_g, src_img_r, dst_img_b, dst_img_g, dst_img_r, src_shape, image_edge)
+
+    min_row, max_row, min_col, max_col = np.asarray(image_edge)
+    min_row = min_row - 50 if min_row - 50 > 0 else 0
+    max_row = max_row + 50 if max_row + 50 < dst_shape[0] else dst_shape[0]
+    min_col = min_col - 50 if min_col - 50 > 0 else 0
+    max_col = max_col + 50 if max_col + 50 < dst_shape[1] else dst_shape[1]
+
+    dst_img_b = dst_img_b[min_row : max_row, min_col : max_col]
+    dst_img_g = dst_img_g[min_row : max_row, min_col : max_col]
+    dst_img_r = dst_img_r[min_row : max_row, min_col : max_col]
 
     return np.dstack([dst_img_b, dst_img_g, dst_img_r])
 
