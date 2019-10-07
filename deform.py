@@ -7,6 +7,7 @@ import time
 import os
 
 from anti_deform import from_label_deform
+from cover_texture import *
 
 def label_visualization(label, name):
     rows, cols = label.shape
@@ -119,8 +120,8 @@ def gen_deform_label(img_path, data_path, operation : list):
         print(f'path {label_path} not exists, mkdir')
         os.mkdir(label_path)
     
-    np.save(os.path.join(label_path, filename[: filename.index('.')] + '_x'), label_x)
-    np.save(os.path.join(label_path, filename[: filename.index('.')] + '_y'), label_y)
+    # np.save(os.path.join(label_path, filename[: filename.index('.')] + '_x'), label_x)
+    # np.save(os.path.join(label_path, filename[: filename.index('.')] + '_y'), label_y)
     # cv2.imwrite(os.path.join(img_path, filename), img)
     print(f'img: {os.path.abspath(img_path)} finished, time:{time.time() - total_start}s')
     return label_x, label_y
@@ -129,7 +130,8 @@ def gen_deform_label(img_path, data_path, operation : list):
 
 if __name__ == '__main__':
     img_path = '/home/wulei/DocUNet/data_gen/scan/25.png'
-    operation = [1, 0, 0, 0, 0, 1, ]
+    texture_path = '/home/wulei/DocUNet/data_gen/scan/dtd_3.jpg'
+    operation = [1, 0, 0, 0, 1]
     data_path = '/home/wulei/DocUNet/data_gen'
     filename = os.path.basename(img_path)
 
@@ -142,6 +144,9 @@ if __name__ == '__main__':
 
     print(f'start deformation...')
     start = time.time()
-    img = from_label_deform(label_x, label_y, img_path)
+    img_b, img_g, img_r, label_x, label_y = from_label_deform(label_x, label_y, img_path)
+    img = texture(label_x, img_b, img_g, img_r, texture_path)
     cv2.imwrite(os.path.join(data_path, 'img', filename), img)
+
+    # TODO save label_x and label_y
     print(f'deformation finished. time: {time.time() - start}')
