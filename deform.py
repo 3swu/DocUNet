@@ -87,11 +87,9 @@ def deform(label_shape, label_x, label_y, type):
     return new_label_x, new_label_y
 
 
-def gen_deform_label(img_path, data_path, operation : list):
-    assert os.path.exists(img_path) and os.path.exists(data_path), 'image path or data path not exists'
+def gen_deform_label(img_path, operation : list):
 
     print(f'img: {os.path.abspath(img_path)}')
-    filename = os.path.basename(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_COLOR)
 
     # label padding
@@ -105,25 +103,10 @@ def gen_deform_label(img_path, data_path, operation : list):
     label_y[i_rows_start : i_rows_end, i_cols_start : i_cols_end] = -1
 
 
-    total_start = time.time()
-
     for i, type_ in enumerate(operation):
-        start = time.time()
         print(f'round {i}, type:{"fold" if type_ == 0 else "curve"}')
-        start = time.time()
         label_x, label_y = deform(label_shape, label_x, label_y, type_)        
-        print(f'round {i} finished, time:{time.time() - start}s')
 
-    label_path = os.path.join(data_path, 'labels')
-
-    if not os.path.exists(label_path):
-        print(f'path {label_path} not exists, mkdir')
-        os.mkdir(label_path)
-    
-    # np.save(os.path.join(label_path, filename[: filename.index('.')] + '_x'), label_x)
-    # np.save(os.path.join(label_path, filename[: filename.index('.')] + '_y'), label_y)
-    # cv2.imwrite(os.path.join(img_path, filename), img)
-    print(f'img: {os.path.abspath(img_path)} finished, time:{time.time() - total_start}s')
     return label_x, label_y
 
 
@@ -135,7 +118,7 @@ if __name__ == '__main__':
     data_path = '/home/wulei/DocUNet/data_gen'
     filename = os.path.basename(img_path)
 
-    label_x, label_y = gen_deform_label(img_path, data_path, operation)
+    label_x, label_y = gen_deform_label(img_path, operation)
 
     # label_visualization(label_x, "x")
     # label_visualization(label_y, 'y')
@@ -149,5 +132,10 @@ if __name__ == '__main__':
     cv2.imwrite(os.path.join(data_path, 'img', filename), img)
 
     label_path = os.path.join(data_path, 'labels')
+
+    if not os.path.exists(label_path):
+        print(f'path {label_path} not exists, mkdir')
+        os.mkdir(label_path)
+    
     np.savez_compressed(os.path.join(label_path, filename[: filename.index('.')]), x = label_x, y = label_y)
     print(f'deformation finished. time: {time.time() - start}')
