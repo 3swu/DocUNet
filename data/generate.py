@@ -38,7 +38,12 @@ if not os.path.exists(target_label_folder):
     os.mkdir(target_label_folder)
 
 src_images = os.listdir(img_folder)
-texture_images = os.listdir(texture_folder)
+texture_dir = os.listdir(texture_folder)
+texture_images = []
+for dir in texture_dir:
+    path = texture_folder + '/' + dir
+    texture_images.extend([dir + '/' + file for file in os.listdir(path)])
+
 
 random.shuffle(src_images)
 random.shuffle(texture_images)
