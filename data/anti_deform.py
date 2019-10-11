@@ -4,14 +4,15 @@ import time
 import os
 import math
 
-def from_label_deform(label_x, label_y, img_path):
+def from_label_deform(label_x, label_y, img_path, resize_shape):
     assert os.path.exists(img_path)
 
     # label_x = np.loadtxt(label_csv_path[0])
     # label_y = np.loadtxt(label_csv_path[1])
     # label = np.load(label_path)
 
-    img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+    img_original = cv2.imread(img_path, cv2.IMREAD_COLOR)
+    img = cv2.resize(img_original, (resize_shape[1], resize_shape[0]))
 
     lib = np.ctypeslib.load_library('from_label_deform', 'c_src')
 
@@ -66,10 +67,10 @@ def from_label_deform(label_x, label_y, img_path):
     c_from_label_deform(label_x, label_y, dst_shape, src_img_b, src_img_g, src_img_r, dst_img_b, dst_img_g, dst_img_r, src_shape, image_edge)
 
     min_row, max_row, min_col, max_col = np.asarray(image_edge)
-    min_row = min_row - 50 if min_row - 50 > 0 else 0
-    max_row = max_row + 50 if max_row + 50 < dst_shape[0] else dst_shape[0]
-    min_col = min_col - 50 if min_col - 50 > 0 else 0
-    max_col = max_col + 50 if max_col + 50 < dst_shape[1] else dst_shape[1]
+    min_row = min_row - 20 if min_row - 20 > 0 else 0
+    max_row = max_row + 20 if max_row + 20 < dst_shape[0] else dst_shape[0]
+    min_col = min_col - 20 if min_col - 20 > 0 else 0
+    max_col = max_col + 20 if max_col + 20 < dst_shape[1] else dst_shape[1]
 
     dst_img_b = dst_img_b[min_row : max_row, min_col : max_col]
     dst_img_g = dst_img_g[min_row : max_row, min_col : max_col]
