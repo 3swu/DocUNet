@@ -13,8 +13,8 @@ void from_label_deform(double* label_x, double* label_y, int* label_dst_shape,
 
     double src_x, src_y;
     int floor_x, ceil_x, floor_y, ceil_y;
-    int offset_x = (int)(src_rows * 0.25);
-    int offset_y = (int)(src_cols * 0.25);
+    int offset_x = (int)(src_rows * 0.5);
+    int offset_y = (int)(src_cols * 0.5);
 
     int min_row = dst_rows, max_row = 0;
     int min_col = dst_cols, max_col = 0;
