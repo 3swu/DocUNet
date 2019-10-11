@@ -1,7 +1,8 @@
 {
     "img_folder": "/home/wulei/DocUNet/scan",
     "texture_folder": "/home/wulei/DocUNet/dtd/images/blotchy",
-    "deform_rounds": 6,
     "target_folder": "/home/wulei/DocUNet/data_gen/gen_test",
-    "numbers": 10
+    "deform_rounds": 8,
+    "resize_shape": [1000, 1000],
+    "numbers": 50
 }
