@@ -21,6 +21,7 @@ texture_folder = config['texture_folder']
 target_folder = config['target_folder']
 deform_rounds = config['deform_rounds']
 numbers = config['numbers']
+resize_shape = config['resize_shape']
 
 assert os.path.exists(img_folder), 'img_folder do not exists'
 assert os.path.exists(texture_folder), 'texture_folder do not exists'
@@ -60,9 +61,9 @@ while True:
         file_name = img[: img.index('.')] + '-' + uuid.uuid1().hex[0:8]
 
         # generate
-        label_x, label_y = gen_deform_label(img_path, operation)
+        label_x, label_y = gen_deform_label(img_path, resize_shape, operation)
 
-        img_b, img_g, img_r, label_x, label_y = from_label_deform(label_x, label_y, img_path)
+        img_b, img_g, img_r, label_x, label_y = from_label_deform(label_x, label_y, img_path, resize_shape)
         img = texture(label_x, img_b, img_g, img_r, texture_path)
         cv2.imwrite(os.path.join(target_img_folder, file_name) + '.png', img)
         np.savez_compressed(os.path.join(target_label_folder, file_name), x = label_x, y = label_y)
