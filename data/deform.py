@@ -94,11 +94,11 @@ def gen_deform_label(img_path, resize_shape, operation : list):
 
     # label padding
     img_shape = resize_shape
-    label_shape = (int(img_shape[0] * 1.5), int(img_shape[1] * 1.5))
+    label_shape = (int(img_shape[0] * 2), int(img_shape[1] * 2))
     label_x, label_y =  np.zeros(label_shape), np.zeros(label_shape)
 
-    i_rows_start, i_rows_end, i_cols_start, i_cols_end = int((1 / 6) * label_shape[0]), \
-        int((5 / 6) * label_shape[0]), int((1 / 6) * label_shape[1]), int((5 / 6) * label_shape[1])
+    i_rows_start, i_rows_end, i_cols_start, i_cols_end = int(0.25 * label_shape[0]), \
+        int(0.75 * label_shape[0]), int(0.25 * label_shape[1]), int(0.75 * label_shape[1])
     label_x[i_rows_start : i_rows_end, i_cols_start : i_cols_end] = -1
     label_y[i_rows_start : i_rows_end, i_cols_start : i_cols_end] = -1
 
