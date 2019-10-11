@@ -66,6 +66,9 @@ while True:
         img_b, img_g, img_r, label_x, label_y = from_label_deform(label_x, label_y, img_path, resize_shape)
         img = texture(label_x, img_b, img_g, img_r, texture_path)
         cv2.imwrite(os.path.join(target_img_folder, file_name) + '.png', img)
+
+        # change label precision to lower the volumn of label npz
+        label_x, label_y = label_x.astype(np.float16), label_y.astype(np.float16)
         np.savez_compressed(os.path.join(target_label_folder, file_name), x = label_x, y = label_y)
         
         print(f'image deformation finished: {file_name + ".png"}, time: {time.time() - start} s')
