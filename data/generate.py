@@ -7,10 +7,12 @@ import time
 import numpy as np
 import json
 import uuid
+from cv2 import cv2
 
 from anti_deform import from_label_deform
-from cover_texture import *
-from deform import *
+from cover_texture import texture
+from deform import gen_deform_label
+from resize_img_label import resize_img_label
 
 config = {}
 with open('config.json') as f:
@@ -21,7 +23,8 @@ texture_folder = config['texture_folder']
 target_folder = config['target_folder']
 deform_rounds = config['deform_rounds']
 numbers = config['numbers']
-resize_shape = config['resize_shape']
+resize_shape_before_deform = config['resize_shape_before_deform']
+resize_shape_after_deform = config['resize_shape_after_deform']
 
 assert os.path.exists(img_folder), 'img_folder do not exists'
 assert os.path.exists(texture_folder), 'texture_folder do not exists'
@@ -66,10 +69,15 @@ while True:
         file_name = img[: img.index('.')] + '-' + uuid.uuid1().hex[0:8]
 
         # generate
-        label_x, label_y = gen_deform_label(img_path, resize_shape, operation)
+        label_x, label_y = gen_deform_label(img_path, resize_shape_before_deform, operation)
 
-        img_b, img_g, img_r, label_x, label_y = from_label_deform(label_x, label_y, img_path, resize_shape)
-        img = texture(label_x, img_b, img_g, img_r, texture_path)
+        img_b, img_g, img_r, label_x, label_y = from_label_deform(label_x, label_y, img_path, resize_shape_before_deform)
+        img_b, img_g, img_r = texture(label_x, img_b, img_g, img_r, texture_path)
+
+        # resize image and label
+        label_x, label_y, img_b, img_g, img_r = resize_img_label(label_x, label_y, img_b, img_g, img_r, resize_shape_after_deform)
+        img = np.dstack([img_b, img_g, img_r])
+        
         cv2.imwrite(os.path.join(target_img_folder, file_name) + '.png', img)
 
         # change label precision to lower the volumn of label npz
