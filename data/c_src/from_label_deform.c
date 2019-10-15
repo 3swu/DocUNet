@@ -21,7 +21,8 @@ void from_label_deform(double* label_x, double* label_y, int* label_dst_shape,
 
     for(int i = 0; i < dst_rows; i++) {
         for(int j = 0; j < dst_cols; j++) {
-            if(label_x[i * dst_cols + j] > -EPSINON && label_x[i * dst_cols + j] < EPSINON)
+            if((label_x[i * dst_cols + j] > -EPSINON && label_x[i * dst_cols + j] < EPSINON) && 
+               (label_y[i * dst_cols + j] > -EPSINON && label_y[i * dst_cols + j] < EPSINON))
                 continue;
             else {
                 src_x = i - label_x[i * dst_cols + j] - offset_x;
