@@ -50,5 +50,5 @@ def texture(label, src_img_b, src_img_g, src_img_r, texture_img_path):
 
     c_cover_texture(src_b, src_g, src_r, texture_b, texture_g, texture_r, label_for_cover, shape)
 
-    return np.dstack([src_b, src_g, src_r])
+    return src_b, src_g, src_r
 
