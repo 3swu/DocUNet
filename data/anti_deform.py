@@ -7,17 +7,12 @@ import math
 def from_label_deform(label_x, label_y, img_path, resize_shape):
     assert os.path.exists(img_path)
 
-    # label_x = np.loadtxt(label_csv_path[0])
-    # label_y = np.loadtxt(label_csv_path[1])
-    # label = np.load(label_path)
-
     img_original = cv2.imread(img_path, cv2.IMREAD_COLOR)
     img = cv2.resize(img_original, (resize_shape[1], resize_shape[0]))
 
     lib = np.ctypeslib.load_library('from_label_deform', 'c_src')
 
     rows, cols, _ = img.shape
-    # assert (rows, cols) == label_x.shape and (rows, cols) == label_y.shape, 'shape of labels and img is not same'
 
     src_shape = np.array([rows, cols]).astype(np.int32)
     dst_shape = np.array(label_x.shape).astype(np.int32)
@@ -55,8 +50,6 @@ def from_label_deform(label_x, label_y, img_path, resize_shape):
         np.ctypeslib.ndpointer(dtype=np.int32, ndim=1),
     ]
 
-    
-    # img = img.astype(np.float32)
     dst_img_b = dst_img_b.astype(np.float64)
     dst_img_g = dst_img_g.astype(np.float64)
     dst_img_r = dst_img_r.astype(np.float64)
@@ -79,13 +72,4 @@ def from_label_deform(label_x, label_y, img_path, resize_shape):
     label_x = label_x[min_row : max_row, min_col : max_col]
     label_y = label_y[min_row : max_row, min_col : max_col]
 
-    # return np.dstack([dst_img_b, dst_img_g, dst_img_r])
     return dst_img_b, dst_img_g, dst_img_r, label_x, label_y
-
-
-
-if __name__ == '__main__':
-    start = time.time()
-    img = from_label_deform('data_gen/labels/dtd_0062.npy', 'test(npy)', 'data_gen/scan/dtd_0062.jpg')
-    cv2.imwrite('data_gen/img/dtd_0062_anti.jpg', img)
-    print(f'time:{time.time() - start}')
