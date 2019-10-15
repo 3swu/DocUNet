@@ -1,5 +1,4 @@
 #include <math.h>
-#include <stdio.h>
 #define EPSINON 0.0001
 
 double distance(double k, int vertex_x, int vertex_y, int point_x, int point_y) {
@@ -62,11 +61,8 @@ void deform(double* old_label_x, double* old_label_y, double* new_label_x, doubl
                 continue;
         
             else {
-                // offset Bilinear interpolation
                 floor_x = (int)floor(old_x);
-                ceil_x = (int)ceil(old_x);
                 floor_y = (int)floor(old_y);
-                ceil_y = (int)ceil(old_y);
 
                 new_label_x[i * cols + j] = offset_x + old_label_x[floor_x * cols + floor_y];
                 new_label_y[i * cols + j] = offset_y + old_label_y[floor_x * cols + floor_y];
