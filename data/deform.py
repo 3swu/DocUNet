@@ -90,7 +90,6 @@ def deform(label_shape, label_x, label_y, type):
 def gen_deform_label(img_path, resize_shape, operation : list):
 
     print(f'img: {os.path.abspath(img_path)}')
-    img = cv2.imread(img_path, cv2.IMREAD_COLOR)
 
     # label padding
     img_shape = resize_shape
