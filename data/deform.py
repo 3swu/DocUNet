@@ -108,34 +108,3 @@ def gen_deform_label(img_path, resize_shape, operation : list):
         label_x, label_y = deform(label_shape, label_x, label_y, type_)        
 
     return label_x, label_y
-
-
-
-if __name__ == '__main__':
-    img_path = '/home/wulei/DocUNet/data_gen/scan/25.png'
-    texture_path = '/home/wulei/DocUNet/data_gen/scan/dtd_3.jpg'
-    operation = [1, 0, 0, 0, 1]
-    data_path = '/home/wulei/DocUNet/data_gen'
-    filename = os.path.basename(img_path)
-
-    label_x, label_y = gen_deform_label(img_path, operation)
-
-    # label_visualization(label_x, "x")
-    # label_visualization(label_y, 'y')
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-
-    print(f'start deformation...')
-    start = time.time()
-    img_b, img_g, img_r, label_x, label_y = from_label_deform(label_x, label_y, img_path)
-    img = texture(label_x, img_b, img_g, img_r, texture_path)
-    cv2.imwrite(os.path.join(data_path, 'img', filename), img)
-
-    label_path = os.path.join(data_path, 'labels')
-
-    if not os.path.exists(label_path):
-        print(f'path {label_path} not exists, mkdir')
-        os.mkdir(label_path)
-    
-    np.savez_compressed(os.path.join(label_path, filename[: filename.index('.')]), x = label_x, y = label_y)
-    print(f'deformation finished. time: {time.time() - start}')
