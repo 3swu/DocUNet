@@ -39,4 +39,4 @@ def resize_img_label(label_x, label_y, img_b, img_g, img_r, resize_shape):
     c_resize_img_label(label_x, label_y, new_label_x, new_label_y,\
         img_b, img_g, img_r, new_img_b, new_img_g, new_img_r, original_shape, new_shape)
 
-    return new_label_y, new_label_y, new_img_b, new_img_r, new_img_r
+    return new_label_x, new_label_y, new_img_b, new_img_r, new_img_r
