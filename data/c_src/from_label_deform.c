@@ -28,9 +28,9 @@ void from_label_deform(double* label_x, double* label_y, int* label_dst_shape,
                 src_x = i - label_x[i * dst_cols + j] - offset_x;
                 src_y = j - label_y[i * dst_cols + j] - offset_y;
 
-                if((src_x < 0 || src_x >= src_rows - 1) || (src_y < 0 || src_y >= src_cols - 1))
-                    continue;
-                else {
+                // if((src_x < 0 || src_x >= src_rows - 1) || (src_y < 0 || src_y >= src_cols - 1))
+                //     continue;
+                // else {
                     
                     min_row = i < min_row ? i : min_row;
                     max_row = i > max_row ? i : max_row;
@@ -63,7 +63,7 @@ void from_label_deform(double* label_x, double* label_y, int* label_dst_shape,
                         src_img_r[ceil_x * src_cols + ceil_y] * (src_x - floor_x) * (src_y - floor_y)
                     );
 
-                }
+                // }
             }
         }
     }
