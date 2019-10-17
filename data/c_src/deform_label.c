@@ -19,6 +19,21 @@ double get_w(double alpha, double distance_xy, int rows, int type) {
     return type == 0 ? alpha / (distance_xy + alpha) : (1 - pow(distance_xy / (rows / 2), alpha));
 }
 
+int get_empty_neighbor(double* label, double x, double y, int cols) {
+    int ceil_x = (int)ceil(x);
+    int ceil_y = (int)ceil(y);
+    int floor_x = (int)floor(x);
+    int floor_y = (int)floor(y);
+    int count = 0;
+
+    count += (label[floor_x * cols + floor_y] >= -EPSINON && label[floor_x * cols + floor_y] <= EPSINON) ? 1 : 0;
+    count += (label[floor_x * cols + ceil_y] >= -EPSINON && label[floor_x * cols + ceil_y] <= EPSINON) ? 1 : 0;
+    count += (label[ceil_x * cols + floor_y] >= -EPSINON && label[ceil_x * cols + floor_y] <= EPSINON) ? 1 : 0;
+    count += (label[ceil_x * cols + ceil_y] >= -EPSINON && label[ceil_x * cols + ceil_y] <= EPSINON) ? 1 : 0;
+    
+    return count;
+}
+
 
 
 void deform(double* old_label_x, double* old_label_y, double* new_label_x, double* new_label_y, int* shape, int* vertex, double* v, int type) {
@@ -51,13 +66,14 @@ void deform(double* old_label_x, double* old_label_y, double* new_label_x, doubl
             old_x = i - offset_x;
             old_y = j - offset_y;
 
-            temp_x = (int)old_x;
-            temp_y = (int)old_y;
+            temp_x = (int)floor(old_x);
+            temp_y = (int)floor(old_y);
 
             if ((old_x < 0 || old_x >= rows - 1) || (old_y < 0 || old_y >= cols - 1))
                 continue;
             
-            else if(old_label_x[temp_x * cols + temp_y] >= -EPSINON && old_label_x[temp_x * cols + temp_y] <= EPSINON) 
+            else if(get_empty_neighbor(old_label_x, old_x, old_y, cols) >= 1) 
+            // else if(old_label_x[temp_x * cols + temp_y] >= -EPSINON && old_label_x[temp_x * cols + temp_y] <= EPSINON) 
                 continue;
         
             else {
