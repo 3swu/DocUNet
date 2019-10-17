@@ -35,6 +35,14 @@ def resize_img_label(label_x, label_y, img_b, img_g, img_r, resize_shape):
     
     original_shape = np.array(label_x.shape).astype(np.int32)
     new_shape = np.array(resize_shape).astype(np.int32)
+
+    # make sure that the image is c contiguous
+    if not img_b.flags['C_CONTIGUOUS']:
+        img_b = np.ascontiguousarray(img_b, dtype=img_b.dtype)
+    if not img_g.flags['C_CONTIGUOUS']:
+        img_g = np.ascontiguousarray(img_g, dtype=img_g.dtype)
+    if not img_r.flags['C_CONTIGUOUS']:
+        img_r = np.ascontiguousarray(img_r, dtype=img_r.dtype)
     
     c_resize_img_label(label_x, label_y, new_label_x, new_label_y,\
         img_b, img_g, img_r, new_img_b, new_img_g, new_img_r, original_shape, new_shape)
