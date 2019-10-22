@@ -4,7 +4,7 @@ from cv2 import cv2
 import os
 
 def get_c_funcs() -> dict:
-    lib = np.ctypeslib.load_library('inverse_deform', '.')
+    lib = np.ctypeslib.load_library('inverse_deform', 'c_src')
     ndpointer_float64_2d = np.ctypeslib.ndpointer(dtype=np.float64, ndim=2, flags='C_CONTIGUOUS')
     ndpointer_int32_1d   = np.ctypeslib.ndpointer(dtype=np.int32, ndim=1)
     
@@ -85,7 +85,15 @@ def crop(dst_img_b, dst_img_g, dst_img_r, funcs):
 
     return dst_img_b, dst_img_g, dst_img_r
 
+def inverse_deform(img_path, label_path, save_path):
+    funcs = get_c_funcs()
+    dst_img_b, dst_img_g, dst_img_r = inverse_deform_padding(img_path, label_path, funcs)
+    dst_img_b, dst_img_g, dst_img_r = crop(dst_img_b, dst_img_b, dst_img_r, funcs)
+    cv2.imwrite(save_path, np.dstack([dst_img_b, dst_img_g, dst_img_r]))
 
 
-
-
+if __name__ == '__main__':
+    img_path = '/home/wulei/DocUNet/data_gen/gen_test/image/62-3ed44c2a.png'
+    label_path = '/home/wulei/DocUNet/data_gen/gen_test/label/62-3ed44c2a.npz'
+    save_path = '/home/wulei/DocUNet/data_gen/gen_test/inverse_deform/62-3ed44c2a.png'
+    inverse_deform(img_path, label_path, save_path)
