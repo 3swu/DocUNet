@@ -71,7 +71,7 @@ def inverse_deform_padding(img_path, label_path, funcs):
 
     return dst_img_b, dst_img_g, dst_img_r
 
-def crop(dst_img_b, dst_img_b, dst_img_r, funcs):
+def crop(dst_img_b, dst_img_g, dst_img_r, funcs):
     edge = np.zeros(4,).astype(np.int32)
     dst_shape = np.array(dst_img_b.shape).astype(np.int32)
 
