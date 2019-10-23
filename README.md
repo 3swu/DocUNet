@@ -3,3 +3,7 @@
 ### 数据生成
 + 进入data目录，在config.json中填写配置文件，然后使用命令`ulimit -s`检查用户进程的堆栈软限制大小，Ubuntu默认为8Mb，建议调大，直到不报*段错误*，使用命令`ulimit -s [size]`，需要先调大硬限制
 + 运行文件generate.py开始生成数据
+
+### 图片反变形
++ 导入inverse_deform模块
++ 使用函数`inverse_deform(img_path, label_path, save_path)`即可反变形
