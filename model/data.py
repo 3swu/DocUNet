@@ -32,7 +32,9 @@ class DistortedDataSet(Dataset):
         # img = torch.from_numpy(img)
         img = img.transpose(2, 0, 1)
 
-        return (img, label)
+        label_x, label_y = label['x'], label['y']
+
+        return img, label_x, label_y
 
 if __name__ == '__main__':
     images_folder = '/home/wulei/DocUNet/data_gen/gen_test/image/'
