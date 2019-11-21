@@ -62,10 +62,10 @@ class Net(nn.Module):
         x3 = self.down_conv4(x2)
         features_stack.append(x3)
         x4 = self.down_conv5(x3)
-        print(x3.size())
+        # print(x3.size())
 
         x = self.up_conv1(x4)
-        print(x.size())
+        # print(x.size())
         x = torch.cat((features_stack.pop(), x), dim=1)
         x = self.up_conv1_later(x)
 
@@ -86,21 +86,27 @@ class Net(nn.Module):
         return x
 
 if __name__ == '__main__':
-    images_folder = '/home/wulei/DocUNet/data_gen/gen_test/image/'
-    labels_folder = '/home/wulei/DocUNet/data_gen/gen_test/label/'
-    batch_size = 1
+    # images_folder = '/home/wulei/DocUNet/data_gen/gen_test/image/'
+    # labels_folder = '/home/wulei/DocUNet/data_gen/gen_test/label/'
+    # batch_size = 1
 
-    data_set = DistortedDataSet(images_folder, labels_folder)
+    # data_set = DistortedDataSet(images_folder, labels_folder)
 
-    data_loader = DataLoader(data_set, batch_size=batch_size, shuffle=True)
+    # data_loader = DataLoader(data_set, batch_size=batch_size, shuffle=True)
 
-    net = Net()
+    # net = Net()
+    # # print(net)
 
-    for i, data in enumerate(data_loader):
-        images = data[0]
-        labels = data[1]
+    # for i, data in enumerate(data_loader):
+    #     images = data[0]
+    #     labels = data[1]
 
-        out = net(images)
-        print(out.size())
+    #     out = net(images)
+    #     print(out.size())
         
 
+
+    x = torch.randn((1, 3, 352, 272))
+    net = Net()
+    out = net(x)
+    print(x.size())
