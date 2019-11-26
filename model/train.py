@@ -24,9 +24,15 @@ def train(model, batch_size, epoch, train_data: Dataset, optimizer, logger):
     for epoch_idx in range(epoch):
         train_sample_sum, train_acc_sum, start = 0, 0., time.time()
         for batch_idx, (inputs, label_x, label_y) in enumerate(data_loader):
+<<<<<<< HEAD
             inputs, label_x, label_y = inputs.cuda(),\
                                      label_x.cuda(),\
                                      label_y.cuda()
+=======
+            inputs, label_x, label_y = torch.from_numpy(inputs).cuda(),\
+                                     torch.from_numpy(label_x).cuda(),\
+                                     torch.from_numpy(label_y).cuda()
+>>>>>>> 6ca9587f032c410d9807cd73f023003fc190f744
             
             outputs = model(inputs)
             loss_output = loss(outputs, label_x, label_y)
