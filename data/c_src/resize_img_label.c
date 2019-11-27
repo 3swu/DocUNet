@@ -50,18 +50,18 @@ void resize_img_label(double* old_label_x, double* old_label_y,
                 ceil_y = (int)ceil(src_y);
             }
 
-            offset_x = bilinear_interpolation(src_x, src_y, 
-                                              floor_x, ceil_x, floor_y, ceil_y, 
-                                              old_label_x[floor_x * old_cols + floor_y], old_label_x[ceil_x * old_cols + floor_y], 
-                                              old_label_x[floor_x * old_cols + ceil_y], old_label_x[ceil_x * old_cols + ceil_y]);
-            // offset_x = old_label_x[floor_x * old_cols + floor_y];
+            // offset_x = bilinear_interpolation(src_x, src_y, 
+            //                                   floor_x, ceil_x, floor_y, ceil_y, 
+            //                                   old_label_x[floor_x * old_cols + floor_y], old_label_x[ceil_x * old_cols + floor_y], 
+            //                                   old_label_x[floor_x * old_cols + ceil_y], old_label_x[ceil_x * old_cols + ceil_y]);
+            offset_x = old_label_x[floor_x * old_cols + floor_y];
             new_label_x[i * new_cols + j] = offset_x;
 
-            offset_y = bilinear_interpolation(src_x, src_y, 
-                                              floor_x, ceil_x, floor_y, ceil_y, 
-                                              old_label_y[floor_x * old_cols + floor_y], old_label_y[ceil_x * old_cols + floor_y], 
-                                              old_label_y[floor_x * old_cols + ceil_y], old_label_y[ceil_x * old_cols + ceil_y]);
-            // offset_y = old_label_y[floor_x * old_cols + floor_y];
+            // offset_y = bilinear_interpolation(src_x, src_y, 
+            //                                   floor_x, ceil_x, floor_y, ceil_y, 
+            //                                   old_label_y[floor_x * old_cols + floor_y], old_label_y[ceil_x * old_cols + floor_y], 
+            //                                   old_label_y[floor_x * old_cols + ceil_y], old_label_y[ceil_x * old_cols + ceil_y]);
+            offset_y = old_label_y[floor_x * old_cols + floor_y];
             new_label_y[i * new_cols + j] = offset_y;
 
             new_img_b[i * new_cols + j] = bilinear_interpolation(src_x, src_y, 
