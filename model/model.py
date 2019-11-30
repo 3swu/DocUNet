@@ -10,8 +10,10 @@ class Conv_block(nn.Module):
 
         self.net = nn.Sequential(
             nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(out_channels),
             nn.ReLU(),
             nn.Conv2d(in_channels=out_channels, out_channels=out_channels, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(out_channels),
             nn.ReLU(),
         )
 
@@ -53,18 +55,18 @@ class Net(nn.Module):
 
     def forward(self, x):
         features_stack = []
-        x0 = self.down_conv1(x)
-        features_stack.append(x0)
-        x1 = self.down_conv2(x0)
-        features_stack.append(x1)
-        x2 = self.down_conv3(x1)
-        features_stack.append(x2)
-        x3 = self.down_conv4(x2)
-        features_stack.append(x3)
-        x4 = self.down_conv5(x3)
+        x = self.down_conv1(x)
+        features_stack.append(x)
+        x = self.down_conv2(x)
+        features_stack.append(x)
+        x = self.down_conv3(x)
+        features_stack.append(x)
+        x = self.down_conv4(x)
+        features_stack.append(x)
+        x = self.down_conv5(x)
         # print(x3.size())
 
-        x = self.up_conv1(x4)
+        x = self.up_conv1(x)
         # print(x.size())
         x = torch.cat((features_stack.pop(), x), dim=1)
         x = self.up_conv1_later(x)
@@ -106,7 +108,7 @@ if __name__ == '__main__':
         
 
 
-    x = torch.randn((1, 3, 352, 272))
+    x = torch.randn((10, 3, 352, 272))
     net = Net()
     out = net(x)
     print(x.size())
