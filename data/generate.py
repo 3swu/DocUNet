@@ -72,7 +72,10 @@ while True:
         label_x, label_y = gen_deform_label(img_path, resize_shape_before_deform, operation)
 
         img_b, img_g, img_r, label_x, label_y = from_label_deform(label_x, label_y, img_path, resize_shape_before_deform)
-        img_b, img_g, img_r = texture(label_x, img_b, img_g, img_r, texture_path)
+        try:
+            img_b, img_g, img_r = texture(label_x, img_b, img_g, img_r, texture_path)
+        except:
+            continue
 
         # resize image and label
         label_x, label_y, img_b, img_g, img_r = resize_img_label(label_x, label_y, img_b, img_g, img_r, resize_shape_after_deform)
