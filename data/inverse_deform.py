@@ -128,7 +128,7 @@ def inverse_deform(img_path, label_path, save_path):
 
 
 if __name__ == '__main__':
-    img_path = '/home/wulei/DocUNet/data_gen/gen_test/image/58-4379b328.png'
-    label_path = '/home/wulei/DocUNet/data_gen/gen_test/label/58-4379b328.npz'
-    save_path = '/home/wulei/DocUNet/data_gen/gen_test/inverse_deform/58-4379b328.png'
+    img_path = '/home/wulei/data_generate/image/229-5574a4a0.png'
+    label_path = '/home/wulei/DocUNet/model/test.npz'
+    save_path = '/home/wulei/DocUNet/model/test.png'
     inverse_deform(img_path, label_path, save_path)
