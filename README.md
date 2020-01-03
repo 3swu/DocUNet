@@ -7,3 +7,8 @@
 ### 图片反变形
 + 导入inverse_deform模块
 + 使用函数`inverse_deform(img_path, label_path, save_path)`即可反变形
+
+### 训练结果
+![](res/image/example_1.png)
+![](res/image/example_2.png)
+![](res/image/example_3.png)
