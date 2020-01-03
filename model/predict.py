@@ -29,6 +29,7 @@ def predict_mesh(model: nn.Module, model_path, input_img, transforms):
     return output
 
 if __name__ == '__main__':
+    os.environ['CUDA_VISIBLE_DEVICES'] = '1'
     parser = get_args()
 
     model_path = parser.model_path
