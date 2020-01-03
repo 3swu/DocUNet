@@ -13,7 +13,7 @@ from model import *
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--lr', default=0.002, help='learning rate')
-    parser.add_argument('--epochs', default=60, help='epochs')
+    parser.add_argument('--epochs', default=80, help='epochs')
     parser.add_argument('--batch-size', default=8, help='batch size')
     parser.add_argument('--data-path', help='dataset path')
     parser.add_argument('--pre-trained', default=False, help='use pre trained model')
@@ -44,7 +44,7 @@ def train(model, batch_size, epoch, train_data: Dataset, optimizer, logger, save
             train_sample_sum += len(inputs)
             train_acc_sum += loss_output
 
-            print(f'epoch {str(epoch_idx)}, process {train_sample_sum / len(train_data)}, time {time.time() - start}s, loss {train_acc_sum / train_sample_sum}')
+            print('epoch {}, process {:.2f}, time {:.2f}, loss {:.3f}'.format(str(epoch_idx), train_sample_sum / len(train_data), time.time() - start, train_acc_sum / train_sample_sum))
         with open(save_path + 'loss.txt', 'a') as f:
             f.write(str(train_acc_sum / train_sample_sum) + '\n')
         torch.save(model.state_dict(), save_path + str(epoch_idx) + '.pt')
@@ -77,6 +77,8 @@ def train(model, batch_size, epoch, train_data: Dataset, optimizer, logger, save
 
 
 if __name__ == '__main__':
+    os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+
     parser = get_args()
 
     model_save_path = './model_save/'
@@ -93,7 +95,7 @@ if __name__ == '__main__':
         print(f'model {parser.pre_trained_path} loaded')
 
     model.cuda()
-    optimizer = optim.Adam(model.parameters(), lr=parser.lr)
+    optimizer = optim.Adam(model.parameters(), lr=float(parser.lr))
 
     transform = torchvision.transforms.Compose([
         torchvision.transforms.ToTensor(),
@@ -101,4 +103,4 @@ if __name__ == '__main__':
         ])
     data_set = DistortedDataSet(os.path.join(data_path, 'image'), os.path.join(data_path, 'label'), transform, is_train=True)
 
-    train(model, parser.batch_size, parser.epochs, data_set, optimizer, None, model_save_path)
+    train(model, int(parser.batch_size), parser.epochs, data_set, optimizer, None, model_save_path)
