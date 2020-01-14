@@ -4,7 +4,7 @@ from cv2 import cv2
 import os
 
 def get_c_funcs() -> dict:
-    lib = np.ctypeslib.load_library('inverse_deform', 'c_src')
+    lib = np.ctypeslib.load_library('inverse_deform', '/home/wulei/DocUNet/data/c_src')
     ndpointer_float64_2d = np.ctypeslib.ndpointer(dtype=np.float64, ndim=2, flags='C_CONTIGUOUS')
     ndpointer_int32_1d   = np.ctypeslib.ndpointer(dtype=np.int32, ndim=1)
     ndpointer_int32_2d   = np.ctypeslib.ndpointer(dtype=np.int32, ndim=2)
@@ -52,10 +52,9 @@ def get_c_funcs() -> dict:
 
     return funcs
 
-def inverse_deform_padding(img_path, label_path, funcs):
-    assert os.path.exists(img_path) and os.path.exists(label_path), 'path not exists'
+def inverse_deform_padding(img_path, label: dict, funcs):
+    assert os.path.exists(img_path), 'path not exists'
 
-    label = np.load(label_path)
     label_x, label_y = label['x'], label['y']
     src_shape = label_x.shape
 
@@ -118,9 +117,9 @@ def interpolate(img_b, img_g, img_r, mask, funcs):
     
     return img_b, img_g, img_r
 
-def inverse_deform(img_path, label_path, save_path):
+def inverse_deform(img_path, label, save_path):
     funcs = get_c_funcs()
-    dst_img_b, dst_img_g, dst_img_r, mask = inverse_deform_padding(img_path, label_path, funcs)
+    dst_img_b, dst_img_g, dst_img_r, mask = inverse_deform_padding(img_path, label, funcs)
     dst_img_b, dst_img_g, dst_img_r, mask = crop(dst_img_b, dst_img_g, dst_img_r, mask, funcs)
     dst_img_b, dst_img_g, dst_img_r = interpolate(dst_img_b, dst_img_g, dst_img_r, mask, funcs)
 
