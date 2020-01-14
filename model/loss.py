@@ -31,7 +31,7 @@ class Loss(nn.Module):
 
 
 if __name__ == '__main__':
-    from data import DistortedDataSet
+    from dataset import DistortedDataSet
     from torch.utils.data import DataLoader
     import torchvision.transforms
     import os

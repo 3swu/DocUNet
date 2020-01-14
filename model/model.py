@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from data import DistortedDataSet
+from dataset import DistortedDataSet
 from torch.utils.data import DataLoader
 
 
