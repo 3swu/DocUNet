@@ -9,6 +9,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torchvision.transforms
+import cv2
 
 from data.inverse_deform import inverse_deform
 from model import Net
@@ -69,4 +70,14 @@ if __name__ == '__main__':
     save_path = os.path.join(file_save_folder, file_basename + '-prediction.png')
     np.savez_compressed(os.path.join(file_save_folder, file_basename + '-prediction.npz'), x=label_x, y=label_y)
 
+    inverse_deform(img_path, label, save_path)
+
+    label_x = cv2.blur(label_x, (7, 7))
+    label_y = cv2.blur(label_y, (7, 7))
+    np.savez_compressed(os.path.join(file_save_folder, file_basename + '-prediction-blur.npz'), x=label_x, y=label_y)
+    label = {
+        'x': label_x,
+        'y': label_y,
+    }
+    save_path = os.path.join(file_save_folder, file_basename + '-prediction-blur.png')
     inverse_deform(img_path, label, save_path)
